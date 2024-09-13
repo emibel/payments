@@ -1,8 +1,9 @@
 "use client";
-import { Table } from "reactstrap";
+import { Button, Table } from "reactstrap";
 import { Payment } from "../types/payments";
 import { DateRangePicker, RangeKeyDict, Range } from "react-date-range";
 import { useState, useEffect } from "react";
+import { PaymentsRow } from "./payment-row";
 
 const initialRange: Range = {
   startDate: new Date(),
@@ -10,13 +11,15 @@ const initialRange: Range = {
   key: "selection",
 };
 
-export const PaymentList = ({ data }: { data: Payment[] }) => {
+interface Props {
+  data: Payment[];
+}
+
+export const PaymentList = ({ data }: Props) => {
   const [range, setRange] = useState(initialRange);
   const [payments, setPayments] = useState([...data]);
-
-  const handleSelect = (ranges: RangeKeyDict) => {
-    setRange({ ...ranges.selection });
-  };
+  const [sortAmountDir, setSortAmountDir] = useState("ASC");
+  const [sortDateDir, setSortDateDir] = useState("ASC");
 
   useEffect(() => {
     setPayments(
@@ -30,6 +33,44 @@ export const PaymentList = ({ data }: { data: Payment[] }) => {
     );
   }, [range, data]);
 
+  const handleSelect = (ranges: RangeKeyDict) => {
+    setRange({ ...ranges.selection });
+  };
+
+  const sortByAmount = (payments: Payment[]) => {
+    if (sortAmountDir === "ASC") {
+      setPayments(
+        payments.sort((a: Payment, b: Payment) => a.amount - b.amount)
+      );
+      setSortAmountDir("DESC");
+    } else {
+      setPayments(
+        payments.sort((a: Payment, b: Payment) => b.amount - a.amount)
+      );
+      setSortAmountDir("ASC");
+    }
+  };
+
+  const sortByDate = (payments: Payment[]) => {
+    if (sortDateDir === "ASC") {
+      setPayments(
+        payments.sort(
+          (a: Payment, b: Payment) =>
+            new Date(a.date).getTime() - new Date(b.date).getTime()
+        )
+      );
+      setSortDateDir("DESC");
+    } else {
+      setPayments(
+        payments.sort(
+          (a: Payment, b: Payment) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+      );
+      setSortDateDir("ASC");
+    }
+  };
+
   return (
     <div className="container">
       <DateRangePicker
@@ -41,19 +82,22 @@ export const PaymentList = ({ data }: { data: Payment[] }) => {
         <thead>
           <tr>
             <th>#</th>
-            <th>Date</th>
+            <th>
+              <Button outline onClick={() => sortByDate(payments)}>
+                Date
+              </Button>
+            </th>
             <th>Description</th>
-            <th>Amount</th>
+            <th>
+              <Button outline onClick={() => sortByAmount(payments)}>
+                Amount
+              </Button>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {payments.map((d) => (
-            <tr key={d.id}>
-              <th scope="row">{d.id}</th>
-              <td>{d.date}</td>
-              <td>{d.description}</td>
-              <td>$ {d.amount}</td>
-            </tr>
+          {payments.map((payment) => (
+            <PaymentsRow key={payment.id} payment={payment} />
           ))}
         </tbody>
       </Table>

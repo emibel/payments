@@ -6,12 +6,9 @@ import { Payment } from "./src/types/payments";
 import { getPayments } from "./src/api/payments";
 import { Alert } from "reactstrap";
 
-const initialData: Payment[] = [];
-const initialError: string = "";
-
 export default function Home() {
-  const [data, setData] = useState(initialData);
-  const [error, setError] = useState(initialError);
+  const [data, setData] = useState([] as Payment[]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -30,7 +27,7 @@ export default function Home() {
   return (
     <div className="container">
       {error && <Alert color="danger">{error}</Alert>}
-      <PaymentList data={[...data]} />
+      {<PaymentList data={[...data]} />}
     </div>
   );
 }
