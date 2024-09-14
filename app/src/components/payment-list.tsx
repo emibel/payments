@@ -23,7 +23,6 @@ export const PaymentList = () => {
   const { sortByDate, sortByAmount } = useSorting();
 
   useEffect(() => {
-    console.log("data: ", data);
     setPayments(
       [...data].filter(
         (p) =>
@@ -33,7 +32,6 @@ export const PaymentList = () => {
           new Date(p.date) <= range.endDate
       )
     );
-    console.log("range: ", range);
   }, [range, data]);
 
   const handleSelect = (ranges: RangeKeyDict) => {
