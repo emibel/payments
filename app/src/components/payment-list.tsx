@@ -6,9 +6,12 @@ import { useState, useEffect } from "react";
 import { PaymentsRow } from "./payment-row";
 import { usePayments } from "../hooks/payments";
 
+const lastMidnigth = new Date();
+lastMidnigth.setHours(0, 0, 0, 0);
+
 const initialRange: Range = {
-  startDate: new Date(),
-  endDate: new Date(),
+  startDate: lastMidnigth,
+  endDate: lastMidnigth,
   key: "selection",
 };
 
@@ -20,6 +23,7 @@ export const PaymentList = () => {
   const [sortDateDir, setSortDateDir] = useState("ASC");
 
   useEffect(() => {
+    console.log("data: ", data);
     setPayments(
       [...data].filter(
         (p) =>
@@ -29,6 +33,7 @@ export const PaymentList = () => {
           new Date(p.date) <= range.endDate
       )
     );
+    console.log("range: ", range);
   }, [range, data]);
 
   const handleSelect = (ranges: RangeKeyDict) => {
