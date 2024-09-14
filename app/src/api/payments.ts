@@ -10,15 +10,14 @@ const data: Payment[] = [
 ];
 
 export const getPayments = async (): Promise<Payment[]> => {
-  return new Promise((resolve /* reject */) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(data);
     }, 1000);
   });
   // return new Promise((resolve, reject) => {
   //   setTimeout(() => {
-  //     // resolve(data);
-  //     reject("api not working");
+  //     reject("Api not working");
   //   }, 1000);
   // });
 };

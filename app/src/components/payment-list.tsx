@@ -4,6 +4,7 @@ import { Payment } from "../types/payments";
 import { DateRangePicker, RangeKeyDict, Range } from "react-date-range";
 import { useState, useEffect } from "react";
 import { PaymentsRow } from "./payment-row";
+import { usePayments } from "../hooks/payments";
 
 const initialRange: Range = {
   startDate: new Date(),
@@ -11,11 +12,8 @@ const initialRange: Range = {
   key: "selection",
 };
 
-interface Props {
-  data: Payment[];
-}
-
-export const PaymentList = ({ data }: Props) => {
+export const PaymentList = () => {
+  const { data } = usePayments();
   const [range, setRange] = useState(initialRange);
   const [payments, setPayments] = useState([...data]);
   const [sortAmountDir, setSortAmountDir] = useState("ASC");
