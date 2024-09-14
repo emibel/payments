@@ -28,10 +28,10 @@ export const useSorting = () => {
   const sortByAmount = (list: Payment[]) => {
     if (sortAmountDir === "ASC") {
       setSortAmountDir("DESC");
-      return list.sort((a: Payment, b: Payment) => a.amount - b.amount);
+      return [...list.sort((a: Payment, b: Payment) => a.amount - b.amount)];
     } else {
       setSortAmountDir("ASC");
-      return list.sort((a: Payment, b: Payment) => b.amount - a.amount);
+      return [...list.sort((a: Payment, b: Payment) => b.amount - a.amount)];
     }
   };
 
