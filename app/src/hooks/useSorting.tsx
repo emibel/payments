@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Payment } from "../types/payments";
 
 export const useSorting = () => {
-  const [sortDateDir, setSortDateDir] = useState("ASC");
-  const [sortAmountDir, setSortAmountDir] = useState("ASC");
+  const [sortDateDir, setSortDateDir] = useState("DESC");
+  const [sortAmountDir, setSortAmountDir] = useState("DESC");
 
   const sortByDate = (list: Payment[]) => {
     if (sortDateDir === "ASC") {
@@ -25,15 +25,16 @@ export const useSorting = () => {
     }
   };
 
-  const sortByAmount = (payments: Payment[]) => {
+  const sortByAmount = (list: Payment[]) => {
     if (sortAmountDir === "ASC") {
       setSortAmountDir("DESC");
-      return payments.sort((a: Payment, b: Payment) => a.amount - b.amount);
+      return list.sort((a: Payment, b: Payment) => a.amount - b.amount);
     } else {
       setSortAmountDir("ASC");
-      return payments.sort((a: Payment, b: Payment) => b.amount - a.amount);
+      return list.sort((a: Payment, b: Payment) => b.amount - a.amount);
     }
   };
+
   return {
     sortByDate,
     sortByAmount,
