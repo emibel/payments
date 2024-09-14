@@ -5,6 +5,7 @@ import { DateRangePicker, RangeKeyDict, Range } from "react-date-range";
 import { useState, useEffect } from "react";
 import { PaymentsRow } from "./payment-row";
 import { usePayments } from "../hooks/payments";
+import { useSorting } from "../hooks/useSorting";
 
 const lastMidnigth = new Date();
 lastMidnigth.setHours(0, 0, 0, 0);
@@ -19,8 +20,7 @@ export const PaymentList = () => {
   const { data } = usePayments();
   const [range, setRange] = useState(initialRange);
   const [payments, setPayments] = useState([...data]);
-  const [sortAmountDir, setSortAmountDir] = useState("ASC");
-  const [sortDateDir, setSortDateDir] = useState("ASC");
+  const { sortByDate, sortByAmount } = useSorting();
 
   useEffect(() => {
     console.log("data: ", data);
@@ -40,38 +40,14 @@ export const PaymentList = () => {
     setRange({ ...ranges.selection });
   };
 
-  const sortByAmount = (payments: Payment[]) => {
-    if (sortAmountDir === "ASC") {
-      setPayments(
-        payments.sort((a: Payment, b: Payment) => a.amount - b.amount)
-      );
-      setSortAmountDir("DESC");
-    } else {
-      setPayments(
-        payments.sort((a: Payment, b: Payment) => b.amount - a.amount)
-      );
-      setSortAmountDir("ASC");
-    }
+  const handleSortByAmount = (payments: Payment[]) => {
+    const sortedPayments = sortByAmount(payments);
+    setPayments(sortedPayments);
   };
 
-  const sortByDate = (payments: Payment[]) => {
-    if (sortDateDir === "ASC") {
-      setPayments(
-        payments.sort(
-          (a: Payment, b: Payment) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
-        )
-      );
-      setSortDateDir("DESC");
-    } else {
-      setPayments(
-        payments.sort(
-          (a: Payment, b: Payment) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-      );
-      setSortDateDir("ASC");
-    }
+  const handleSortByDate = (payments: Payment[]) => {
+    const sortedPayments = sortByDate(payments);
+    setPayments(sortedPayments);
   };
 
   return (
@@ -86,13 +62,13 @@ export const PaymentList = () => {
           <tr>
             <th>#</th>
             <th>
-              <Button outline onClick={() => sortByDate(payments)}>
+              <Button outline onClick={() => handleSortByDate(payments)}>
                 Date
               </Button>
             </th>
             <th>Description</th>
             <th>
-              <Button outline onClick={() => sortByAmount(payments)}>
+              <Button outline onClick={() => handleSortByAmount(payments)}>
                 Amount
               </Button>
             </th>
