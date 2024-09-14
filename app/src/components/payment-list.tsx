@@ -1,5 +1,5 @@
 "use client";
-import { Button, Table } from "reactstrap";
+import { Button, Table, Spinner } from "reactstrap";
 import { Payment } from "../types/payments";
 import { DateRangePicker, RangeKeyDict, Range } from "react-date-range";
 import { useState, useEffect } from "react";
@@ -17,7 +17,7 @@ const initialRange: Range = {
 };
 
 export const PaymentList = () => {
-  const { data } = usePayments();
+  const { data, isLoading } = usePayments();
   const [range, setRange] = useState(initialRange);
   const [payments, setPayments] = useState([...data]);
   const { sortByDate, sortByAmount } = useSorting();
@@ -75,9 +75,15 @@ export const PaymentList = () => {
           </tr>
         </thead>
         <tbody>
-          {payments.map((payment) => (
-            <PaymentsRow key={payment.id} payment={payment} />
-          ))}
+          {isLoading && (
+            <Spinner color="primary" type="grow">
+              Loading...
+            </Spinner>
+          )}
+          {!isLoading &&
+            payments.map((payment) => (
+              <PaymentsRow key={payment.id} payment={payment} />
+            ))}
         </tbody>
       </Table>
       <div className="container">
