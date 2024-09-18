@@ -1,32 +1,32 @@
 import { useState, useEffect } from "react";
 import { Payment } from "../types/payments";
 import { getPayments } from "../api/payments";
+import { paymentStore } from "../atoms/payments";
+import { useAtom } from "jotai";
 
 export const usePayments = () => {
-  const [data, setData] = useState([] as Payment[]);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [ payments, setPayments ] = useAtom(paymentStore)
 
   useEffect(() => {
     const getData = async () => {
       try {
-        setIsLoading(true);
+        setPayments({...payments, isLoading: true});
         const result: Payment[] = await getPayments();
-        setData(result);
-        setError("");
+        setPayments({
+          data: [...result],
+          error: '',
+          isLoading: false,
+        })
       } catch (error) {
-        setData([]);
-        setError(error as string);
-      } finally {
-        setIsLoading(false);
+        setPayments({
+          data: [],
+          error: error as string,
+          isLoading: false,
+        })
       }
     };
     getData();
   }, []);
 
-  return {
-    error,
-    data,
-    isLoading,
-  };
+  return payments
 };

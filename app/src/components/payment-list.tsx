@@ -18,8 +18,8 @@ const initialRange: Range = {
 
 export const PaymentList = () => {
   const { data, isLoading } = usePayments();
-  const [range, setRange] = useState(initialRange);
-  const [payments, setPayments] = useState([...data]);
+  const [ range, setRange ] = useState(initialRange);
+  const [ payments, setPayments ] = useState([...data]);
   const { sortByDate, sortByAmount } = useSorting();
 
   useEffect(() => {
