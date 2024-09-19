@@ -6,7 +6,7 @@ import { Alert } from "reactstrap";
 import { usePayments } from "./src/hooks/payments";
 
 export default function Home() {
-  const { error } = usePayments();
+  const { payments: { error } } = usePayments();
 
   return (
     <div className="container">

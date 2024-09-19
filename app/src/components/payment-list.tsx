@@ -1,58 +1,32 @@
 "use client";
 import { Button, Table, Spinner } from "reactstrap";
-import { Payment } from "../types/payments";
-import { DateRangePicker, RangeKeyDict, Range } from "react-date-range";
-import { useState, useEffect } from "react";
+import { DateRangePicker, RangeKeyDict } from "react-date-range";
 import { PaymentsRow } from "./payment-row";
 import { usePayments } from "../hooks/payments";
-import { useSorting } from "../hooks/useSorting";
 
 const lastMidnigth = new Date();
 lastMidnigth.setHours(0, 0, 0, 0);
 
-const initialRange: Range = {
-  startDate: lastMidnigth,
-  endDate: lastMidnigth,
-  key: "selection",
-};
-
 export const PaymentList = () => {
-  const { data, isLoading } = usePayments();
-  const [ range, setRange ] = useState(initialRange);
-  const [ payments, setPayments ] = useState([...data]);
-  const { sortByDate, sortByAmount } = useSorting();
+  const {
+    payments,
+    filteredData,
+    setFilteredData,
+    handleSortByAmount,
+    handleSortByDate
+  } = usePayments();
 
-  useEffect(() => {
-    setPayments(
-      [...data].filter(
-        (p) =>
-          range.startDate &&
-          new Date(p.date) >= range.startDate &&
-          range.endDate &&
-          new Date(p.date) <= range.endDate
-      )
-    );
-  }, [range, data]);
+  const { data, isLoading } = payments;
 
   const handleSelect = (ranges: RangeKeyDict) => {
-    setRange({ ...ranges.selection });
-  };
-
-  const handleSortByAmount = (payments: Payment[]) => {
-    const sortedPayments = sortByAmount(payments);
-    setPayments(sortedPayments);
-  };
-
-  const handleSortByDate = (payments: Payment[]) => {
-    const sortedPayments = sortByDate(payments);
-    setPayments(sortedPayments);
+    setFilteredData({...filteredData, range: { ...ranges.selection }});
   };
 
   return (
     <div className="container">
       <DateRangePicker
         className="p-4"
-        ranges={[range]}
+        ranges={[filteredData.range]}
         onChange={handleSelect}
       />
       <Table>
@@ -60,13 +34,13 @@ export const PaymentList = () => {
           <tr>
             <th>#</th>
             <th>
-              <Button outline onClick={() => handleSortByDate(payments)}>
+              <Button outline onClick={() => handleSortByDate(filteredData.payments)}>
                 Date
               </Button>
             </th>
             <th>Description</th>
             <th>
-              <Button outline onClick={() => handleSortByAmount(payments)}>
+              <Button outline onClick={() => handleSortByAmount(filteredData.payments)}>
                 Amount
               </Button>
             </th>
@@ -79,14 +53,14 @@ export const PaymentList = () => {
             </Spinner>
           )}
           {!isLoading &&
-            payments.map((payment) => (
+            filteredData.payments.map((payment) => (
               <PaymentsRow key={payment.id} payment={payment} />
             ))}
         </tbody>
       </Table>
       <div className="container">
         <h4>Total Transactions: {data.length || 0}</h4>
-        <h4>Total Selected: {payments.length || 0}</h4>
+        <h4>Total Selected: {filteredData.payments.length || 0}</h4>
       </div>
     </div>
   );

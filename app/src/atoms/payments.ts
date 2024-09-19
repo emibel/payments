@@ -17,23 +17,26 @@ const paymentsAtom: PaymentAtom = {
 export const paymentStore = atom(paymentsAtom);
 
 
+// ============================
+
 
 type FilteredPaymentsAtom = {
     payments: Payment[],
     range: Range
 }
 
+const lastMidnigth = new Date();
+lastMidnigth.setHours(0, 0, 0, 0);
 
-// const lastMidnigth = new Date();
-// lastMidnigth.setHours(0, 0, 0, 0);
+const initialRange: Range = {
+  startDate: lastMidnigth,
+  endDate: lastMidnigth,
+  key: "selection",
+};
 
-// const initialRange: Range = {
-//   startDate: lastMidnigth,
-//   endDate: lastMidnigth,
-//   key: "selection",
-// };
+const filteredPaymentsAtom: FilteredPaymentsAtom = {
+    payments: [],
+    range: initialRange,
+}
 
-// const filteredPayments: FilteredPaymentsAtom = {
-//     payments: [],
-//     range: initialRange,
-// }
+export const filteredStore = atom(filteredPaymentsAtom);
